@@ -1,4 +1,38 @@
 class ActorsController < ApplicationController
+
+  def update
+    # Parameters: {"query_name"=>"emily", "query_dob"=>"2024-11-02", "query_bio"=>"asas", "query_image"=>"", "the_id"=>"2700143"}
+
+    a_id = params.fetch("the_id")
+
+    matching_records = Actor.where({ :id => a_id })
+    the_actor = matching_records.at(0)
+
+    the_actor.name = params.fetch("query_name")
+    the_actor.dob = params.fetch("query_dob")
+    the_actor.bio = params.fetch("query_bio")
+    the_actor.image = params.fetch("query_image")
+
+    the_actor.save
+
+    redirect_to("/actors/#{the_actor.id}")
+
+  end
+
+  def create
+
+    a = Actor.new
+    a.name = params.fetch("the_name")
+    a.dob = params.fetch("the_dob")
+    a.bio = params.fetch("the_bio")
+    a.image = params.fetch("the_image")
+
+    a.save
+
+    redirect_to("/actors")
+
+  end
+
   def index
     matching_actors = Actor.all
     @list_of_actors = matching_actors.order({ :created_at => :desc })
@@ -14,4 +48,18 @@ class ActorsController < ApplicationController
       
     render({ :template => "actor_templates/show" })
   end
+
+  def destroy
+
+    the_id = params.fetch("an_id")
+    matching_records = Actor.where({ :id => the_id })
+
+    the_actor = matching_records.at(0)
+    the_actor.destroy
+
+    redirect_to("/actors")
+
+  end
+
+
 end
